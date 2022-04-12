@@ -1,6 +1,43 @@
+import { useEffect, useState } from 'react';
 import './App.scss';
+import TaskItem from './components/Task/TaskItem';
+
+type Task = {
+  id: number
+  text: string
+  category: string
+  checked: boolean
+}
+
+const Tasks: Array<Task> = [
+  { id: 1, text: "Get a new helmet", category: "Uncategorized", checked: true },
+  { id: 2, text: "Purchase Milk & Corn Flakes", category: "Groceries", checked: false },
+]
 
 function App() {
+  const [tasks, setTasks] = useState<Array<Task>>([])
+
+  useEffect(() => {
+    setTasks(Tasks)
+  }, [])
+
+  const check = (taskID: number, checkState: boolean) => {
+    setTasks(prev => {
+      prev.forEach(task => {
+        if (task.id === taskID) {
+          task.checked = !task.checked
+        }
+      });
+      return prev
+    })
+  }
+
+  const deleteTask = () => { console.log("delete") }
+
+  const taskList = tasks.map(task => (
+    <TaskItem key={task.id} id={task.id} text={task.text} category={task.category} checked={task.checked} onCheck={check} onDelete={deleteTask} />
+  ))
+
   return (
     <div className="wrapper">
       <div className="category-list">
@@ -20,16 +57,7 @@ function App() {
           <input type="text" placeholder='Add a new task insdie ‘All’ category' />
         </div>
         <div className="task-list">
-          <div className="task-item">
-            <img className='checkbox' src="/img/checked.svg" alt="checked" width={28} height={28} />
-            <p>Get a new helmet <div className='item-category'>Uncategorized</div></p>
-            <img className='delete' src="/img/delete.png" alt="delete" width={14} height={16} />
-          </div>
-          <div className="task-item">
-            <img className='checkbox' src="/img/unchecked.svg" alt="unchecked" width={28} height={28} />
-            <p>Purchase Milk & Corn Flakes <div className='item-category'>Groceries</div></p>
-            <img className='delete' src="/img/delete.png" alt="delete" width={14} height={16} />
-          </div>
+          {taskList}
         </div>
       </div>
     </div>
