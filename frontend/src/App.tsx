@@ -28,7 +28,9 @@ function App() {
     })
   }
 
-  const deleteTask = () => { console.log("delete") }
+  const deleteTask = (taskID: number) => {
+    setTasks(prev => prev.filter(task => task.id !== taskID))
+  }
 
   const taskList = tasks.map(task => (
     <TaskItem key={task.id} id={task.id} text={task.text} category={task.category} checked={task.checked} onCheck={check} onDelete={deleteTask} />

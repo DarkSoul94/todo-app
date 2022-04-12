@@ -7,7 +7,7 @@ interface Props {
   category: string
   checked: boolean
   onCheck(taskID: number, checkState: boolean): void
-  onDelete(): void
+  onDelete(taskID: number): void
 }
 
 const TaskItem: FC<Props> = ({ id, text, category, checked, onCheck, onDelete }) => {
@@ -16,6 +16,10 @@ const TaskItem: FC<Props> = ({ id, text, category, checked, onCheck, onDelete })
   const changeChecked = () => {
     setCheckboxState(prev => !prev)
     onCheck(id, checkboxState)
+  }
+
+  const onClickDelete = () => {
+    onDelete(id)
   }
 
   return (
@@ -29,7 +33,7 @@ const TaskItem: FC<Props> = ({ id, text, category, checked, onCheck, onDelete })
       </div>
       <p>{text}</p>
       <div className='item-category'>{category}</div>
-      <img className='delete' src="/img/delete.png" alt="delete" width={14} height={16} onClick={onDelete} />
+      <img className='delete' src="/img/delete.png" alt="delete" width={14} height={16} onClick={onClickDelete} />
     </div >
   )
 }
