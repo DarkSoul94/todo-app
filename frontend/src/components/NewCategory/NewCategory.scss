@@ -1,17 +1,17 @@
-.new-task {
+.new-category {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #F3F3F3;
   border-radius: 8px;
   height: 50px;
-  max-width: 730px;
+  width: 170px;
   margin-bottom: 30px;    
 
   input {
     border: none;
     background-color: inherit;
-    width: 690px;
+    width: 150px;
     font-weight: 400;
     font-size: 18px;
     color: #B5B5B5;

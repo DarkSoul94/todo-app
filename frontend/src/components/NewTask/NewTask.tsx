@@ -1,9 +1,9 @@
 import { ChangeEvent, FC, KeyboardEvent, useState } from "react";
-import { Task } from "../../types";
+import { Category, Task } from "../../types";
 import "./NewTask.scss"
 
 interface Props {
-  taskCategory: string
+  taskCategory: Category
   createTask(newTask: Task): void
 }
 
@@ -13,7 +13,7 @@ const NewTask: FC<Props> = ({ taskCategory, createTask }) => {
   const clearInput = () => {
     setTaskText("")
   }
-  
+
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTaskText(e.target.value)
   }
@@ -37,7 +37,7 @@ const NewTask: FC<Props> = ({ taskCategory, createTask }) => {
 
   return (
     <div className="new-task">
-      <input type="text" placeholder={"Add a new task insdie ‘" + taskCategory + "’ category"} value={taskText} onChange={onChange} onKeyDown={onKeyDown} />
+      <input type="text" placeholder={taskCategory.id ? "New task insdie ‘" + taskCategory.name + "’ category" : "New task insdie ‘Uncategorized’ category"} value={taskText} onChange={onChange} onKeyDown={onKeyDown} />
     </div>
   )
 }
