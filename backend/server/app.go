@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"log"
 	"net"
@@ -17,11 +16,9 @@ import (
 	appusecase "github.com/DarkSoul94/todo-app/backend/app/usecase"
 	micrologger "github.com/alexvelfr/micro-logger"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file" // required
 	"github.com/spf13/viper"
-	gomrmysql "gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -34,6 +31,9 @@ type App struct {
 
 // NewApp ...
 func NewApp() *App {
+	db := initGormDB()
+	runGormMigrations(db)
+
 	repo := apprepo.NewRepo()
 	uc := appusecase.NewUsecase(repo)
 	return &App{
@@ -91,54 +91,16 @@ func (a *App) Run(port string) error {
 	return a.httpServer.Shutdown(ctx)
 }
 
-func initDB() *sql.DB {
-	dbString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?%s",
-		viper.GetString("app.db.login"),
-		viper.GetString("app.db.pass"),
-		viper.GetString("app.db.host"),
-		viper.GetString("app.db.port"),
-		viper.GetString("app.db.name"),
-		viper.GetString("app.db.args"),
-	)
-	db, err := sql.Open(
-		"mysql",
-		dbString,
-	)
-	if err != nil {
-		panic(err)
-	}
-	runMigrations(db)
-	return db
-}
-
-func runMigrations(db *sql.DB) {
-	driver, err := mysql.WithInstance(db, &mysql.Config{})
-	if err != nil {
-		panic(err)
-	}
-	m, err := migrate.NewWithDatabaseInstance(
-		"file://migrations",
-		viper.GetString("app.db.name"),
-		driver)
-	if err != nil {
-		panic(err)
-	}
-	err = m.Up()
-	if err != nil && err != migrate.ErrNoChange && err != migrate.ErrNilVersion {
-		fmt.Println(err)
-	}
-}
-
 func initGormDB() *gorm.DB {
-	dbString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?%s",
+	dbString := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Europe/Kiev",
+		viper.GetString("app.db.host"),
 		viper.GetString("app.db.login"),
 		viper.GetString("app.db.pass"),
-		viper.GetString("app.db.host"),
-		viper.GetString("app.db.port"),
 		viper.GetString("app.db.name"),
-		viper.GetString("app.db.args"),
+		viper.GetString("app.db.port"),
 	)
-	db, err := gorm.Open(gomrmysql.Open(dbString), &gorm.Config{})
+
+	db, err := gorm.Open(postgres.Open(dbString), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}

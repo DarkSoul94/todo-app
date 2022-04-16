@@ -2,3 +2,5 @@ frontend/node_modules
 
 backend/.bin/
 backend/config/config.yml
+
+data

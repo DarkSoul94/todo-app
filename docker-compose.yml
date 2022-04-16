@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: todo_app_db
+    image: postgres:latest
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5445:5432
+    networks:
+      - todo_app
+
+  admin:
+    container_name: todo_app_db_web_adminer
+    image: adminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 7070:8080
+    networks:
+      - todo_app
+
+networks:
+  todo_app:

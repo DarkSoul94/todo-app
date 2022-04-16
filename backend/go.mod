@@ -8,7 +8,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.15.1
 	github.com/spf13/viper v1.9.0
 	gorm.io/driver/mysql v1.2.1
-	gorm.io/gorm v1.22.4
+	gorm.io/gorm v1.23.1
 )
 
 require (
@@ -24,4 +24,5 @@ require (
 	golang.org/x/crypto v0.0.0-20211117183948-ae814b36b871 // indirect
 	golang.org/x/sys v0.0.0-20211124211545-fe61309f8881 // indirect
 	gopkg.in/ini.v1 v1.66.1 // indirect
+	gorm.io/driver/postgres v1.3.4
 )
