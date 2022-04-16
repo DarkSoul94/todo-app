@@ -1,8 +1,6 @@
 package http
 
 import (
-	"net/http"
-
 	"github.com/DarkSoul94/todo-app/backend/app"
 	"github.com/gin-gonic/gin"
 )
@@ -19,8 +17,23 @@ func NewHandler(uc app.Usecase) *Handler {
 	}
 }
 
-// HelloWorld ...
-func (h *Handler) HelloWorld(c *gin.Context) {
-	h.uc.HelloWorld(c.Request.Context())
-	c.JSON(http.StatusOK, map[string]string{"status": "ok"})
+func (h *Handler) GetCategoryList(c *gin.Context) {
+
+}
+
+func (h *Handler) CreateCategory(c *gin.Context) {
+
+}
+
+func (h *Handler) GetTaskList(c *gin.Context) {
+
+}
+func (h *Handler) CreateTask(c *gin.Context) {
+
+}
+func (h *Handler) UpdateTask(c *gin.Context) {
+
+}
+func (h *Handler) DeleteTask(c *gin.Context) {
+
 }

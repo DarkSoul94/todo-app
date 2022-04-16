@@ -16,7 +16,6 @@ import (
 	apprepo "github.com/DarkSoul94/todo-app/backend/app/repo/mock"
 	appusecase "github.com/DarkSoul94/todo-app/backend/app/usecase"
 	micrologger "github.com/alexvelfr/micro-logger"
-	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/mysql"
@@ -46,16 +45,19 @@ func NewApp() *App {
 // Run run application
 func (a *App) Run(port string) error {
 	defer a.appRepo.Close()
-	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
+	if viper.GetBool("app.release") {
+		gin.SetMode(gin.ReleaseMode)
+	} else {
+		router.Use(gin.Logger())
+	}
+
 	router.Use(
 		gin.RecoveryWithWriter(micrologger.GetWriter()),
 	)
-	if viper.GetBool("app.client.use") {
-		router.Use(static.Serve("/", static.LocalFile(viper.GetString("app.client.dir"), true)))
-	}
 
-	apphttp.RegisterHTTPEndpoints(router, a.appUC)
+	apiRouter := router.Group("/api")
+	apphttp.RegisterHTTPEndpoints(apiRouter, a.appUC)
 
 	a.httpServer = &http.Server{
 		Addr:           ":" + port,
@@ -67,21 +69,11 @@ func (a *App) Run(port string) error {
 
 	var l net.Listener
 	var err error
-	if viper.GetBool("app.sock_mode") {
-		sockName := viper.GetString("app.sock_name")
-		os.Remove(sockName)
-		l, err = net.Listen("unix", sockName)
-		if err != nil {
-			panic(err)
-		}
-		defer l.Close()
-		os.Chmod(sockName, 0664)
-	} else {
-		l, err = net.Listen("tcp", a.httpServer.Addr)
-		if err != nil {
-			panic(err)
-		}
+	l, err = net.Listen("tcp", a.httpServer.Addr)
+	if err != nil {
+		panic(err)
 	}
+
 	go func(l net.Listener) {
 		if err := a.httpServer.Serve(l); err != nil {
 			log.Fatalf("Failed to listen and serve: %+v", err)
