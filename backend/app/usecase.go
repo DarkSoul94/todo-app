@@ -1,8 +1,8 @@
 package app
 
-import "context"
+import "github.com/DarkSoul94/todo-app/backend/models"
 
 // Usecase ...
 type Usecase interface {
-	HelloWorld(ctx context.Context)
+	CreateCategory(cat models.Category) (uint, error)
 }

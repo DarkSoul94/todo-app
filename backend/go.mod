@@ -7,12 +7,10 @@ require (
 	github.com/gin-gonic/gin v1.7.7
 	github.com/golang-migrate/migrate/v4 v4.15.1
 	github.com/spf13/viper v1.9.0
-	gorm.io/driver/mysql v1.2.1
 	gorm.io/gorm v1.23.1
 )
 
 require (
-	github.com/gin-gonic/contrib v0.0.0-20201101042839-6a891bf89f19
 	github.com/go-playground/validator/v10 v10.9.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect

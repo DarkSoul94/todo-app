@@ -1,24 +1,20 @@
 package usecase
 
 import (
-	"context"
-
 	"github.com/DarkSoul94/todo-app/backend/app"
+	"github.com/DarkSoul94/todo-app/backend/models"
 )
 
-// Usecase ...
-type Usecase struct {
+type usecase struct {
 	repo app.Repository
 }
 
-// NewUsecase ...
-func NewUsecase(repo app.Repository) *Usecase {
-	return &Usecase{
+func NewUsecase(repo app.Repository) app.Usecase {
+	return &usecase{
 		repo: repo,
 	}
 }
 
-// HelloWorld ...
-func (u *Usecase) HelloWorld(c context.Context) {
-	println("Hello")
+func (u *usecase) CreateCategory(cat models.Category) (uint, error) {
+	return u.repo.CreateCategory(cat)
 }

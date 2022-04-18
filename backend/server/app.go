@@ -12,8 +12,9 @@ import (
 
 	"github.com/DarkSoul94/todo-app/backend/app"
 	apphttp "github.com/DarkSoul94/todo-app/backend/app/delivery/http"
-	apprepo "github.com/DarkSoul94/todo-app/backend/app/repo/mock"
+	apprepo "github.com/DarkSoul94/todo-app/backend/app/repo/postgres"
 	appusecase "github.com/DarkSoul94/todo-app/backend/app/usecase"
+	"github.com/DarkSoul94/todo-app/backend/models"
 	micrologger "github.com/alexvelfr/micro-logger"
 	"github.com/gin-gonic/gin"
 	_ "github.com/golang-migrate/migrate/v4/source/file" // required
@@ -34,7 +35,7 @@ func NewApp() *App {
 	db := initGormDB()
 	runGormMigrations(db)
 
-	repo := apprepo.NewRepo()
+	repo := apprepo.NewRepo(db)
 	uc := appusecase.NewUsecase(repo)
 	return &App{
 		appUC:   uc,
@@ -44,7 +45,6 @@ func NewApp() *App {
 
 // Run run application
 func (a *App) Run(port string) error {
-	defer a.appRepo.Close()
 	router := gin.New()
 	if viper.GetBool("app.release") {
 		gin.SetMode(gin.ReleaseMode)
@@ -110,5 +110,7 @@ func initGormDB() *gorm.DB {
 func runGormMigrations(db *gorm.DB) {
 	// Migrate the schema
 	// Add links to needed models
-	db.AutoMigrate()
+	db.AutoMigrate(
+		models.Category{},
+	)
 }
