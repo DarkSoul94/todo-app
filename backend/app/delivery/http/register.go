@@ -20,6 +20,6 @@ func RegisterHTTPEndpoints(router *gin.RouterGroup, uc app.Usecase) {
 		taskEndpoints.GET("/", h.GetTaskList)
 		taskEndpoints.POST("/", h.CreateTask)
 		taskEndpoints.PUT("/", h.UpdateTask)
-		taskEndpoints.DELETE("/", h.DeleteTask)
+		taskEndpoints.DELETE("/:id", h.DeleteTask)
 	}
 }

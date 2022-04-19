@@ -19,6 +19,18 @@ func (u *usecase) CreateCategory(cat models.Category) (uint, error) {
 	return u.repo.CreateCategory(cat)
 }
 
+func (u *usecase) GetTaskList() ([]models.Task, error) {
+	return u.repo.GetTaskList()
+}
+
 func (u *usecase) CreateTask(task models.Task) (uint, error) {
 	return u.repo.CreateTask(task)
+}
+
+func (u *usecase) UpdateTask(task models.Task) error {
+	return u.repo.UpdateTask(task)
+}
+
+func (u *usecase) DeleteTask(id uint) error {
+	return u.repo.DeleteTask(id)
 }

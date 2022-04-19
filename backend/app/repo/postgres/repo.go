@@ -4,6 +4,7 @@ import (
 	"github.com/DarkSoul94/todo-app/backend/app"
 	"github.com/DarkSoul94/todo-app/backend/models"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type repo struct {
@@ -19,7 +20,22 @@ func (r *repo) CreateCategory(cat models.Category) (uint, error) {
 	return cat.ID, tx.Error
 }
 
+func (r *repo) GetTaskList() ([]models.Task, error) {
+	var taskList []models.Task
+
+	tx := r.db.Preload(clause.Associations).Find(&taskList)
+	return taskList, tx.Error
+}
+
 func (r *repo) CreateTask(task models.Task) (uint, error) {
 	tx := r.db.Create(&task)
 	return task.ID, tx.Error
+}
+
+func (r *repo) UpdateTask(task models.Task) error {
+	return r.db.Model(&task).Update("checked", task.Checked).Error
+}
+
+func (r *repo) DeleteTask(id uint) error {
+	return r.db.Delete(&models.Task{}, id).Error
 }
