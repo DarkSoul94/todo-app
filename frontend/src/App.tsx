@@ -50,6 +50,7 @@ function App() {
 
   const crateTask = (newTask: Task) => {
     newTask.id = tasks.length + 1;
+    console.log(newTask)
     setTasks(prev => [...prev, newTask])
   }
 

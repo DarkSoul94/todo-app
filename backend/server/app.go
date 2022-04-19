@@ -112,5 +112,6 @@ func runGormMigrations(db *gorm.DB) {
 	// Add links to needed models
 	db.AutoMigrate(
 		models.Category{},
+		models.Task{},
 	)
 }

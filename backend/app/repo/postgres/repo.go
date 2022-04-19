@@ -18,3 +18,8 @@ func (r *repo) CreateCategory(cat models.Category) (uint, error) {
 	tx := r.db.Create(&cat)
 	return cat.ID, tx.Error
 }
+
+func (r *repo) CreateTask(task models.Task) (uint, error) {
+	tx := r.db.Create(&task)
+	return task.ID, tx.Error
+}
