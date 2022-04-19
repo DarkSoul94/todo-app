@@ -11,8 +11,9 @@ func RegisterHTTPEndpoints(router *gin.RouterGroup, uc app.Usecase) {
 
 	categoryEndpoints := router.Group("/category")
 	{
-		categoryEndpoints.POST("/", h.CreateCategory)
 		categoryEndpoints.GET("/", h.GetCategoryList)
+		categoryEndpoints.POST("/", h.CreateCategory)
+		categoryEndpoints.DELETE("/:id", h.DeleteCategory)
 	}
 
 	taskEndpoints := router.Group("/task")

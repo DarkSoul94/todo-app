@@ -15,9 +15,19 @@ func NewRepo(db *gorm.DB) app.Repository {
 	return &repo{db: db}
 }
 
+func (r *repo) GetCategoryList() ([]models.Category, error) {
+	var catList []models.Category
+	tx := r.db.Find(&catList)
+	return catList, tx.Error
+}
+
 func (r *repo) CreateCategory(cat models.Category) (uint, error) {
 	tx := r.db.Create(&cat)
 	return cat.ID, tx.Error
+}
+
+func (r *repo) DeleteCategory(id uint) error {
+	return r.db.Delete(&models.Category{}, id).Error
 }
 
 func (r *repo) GetTaskList() ([]models.Task, error) {

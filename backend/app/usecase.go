@@ -4,7 +4,9 @@ import "github.com/DarkSoul94/todo-app/backend/models"
 
 // Usecase ...
 type Usecase interface {
+	GetCategoryList() ([]models.Category, error)
 	CreateCategory(cat models.Category) (uint, error)
+	DeleteCategory(id uint) error
 
 	GetTaskList() ([]models.Task, error)
 	CreateTask(task models.Task) (uint, error)

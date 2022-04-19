@@ -69,7 +69,23 @@ func (h *Handler) toHandlerTask(task models.Task) handlerTask {
 }
 
 func (h *Handler) GetCategoryList(c *gin.Context) {
+	var (
+		catList    []models.Category
+		outCatList []handlerCategory
+		err        error
+	)
 
+	catList, err = h.uc.GetCategoryList()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{"status": "error", "error": err.Error()})
+		return
+	}
+
+	for _, cat := range catList {
+		outCatList = append(outCatList, h.toHandlerCatgory(cat))
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "categoryList": outCatList})
 }
 
 func (h *Handler) CreateCategory(c *gin.Context) {
@@ -91,6 +107,27 @@ func (h *Handler) CreateCategory(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{"status": "success", "id": id})
+}
+
+func (h *Handler) DeleteCategory(c *gin.Context) {
+	var (
+		id  uint64
+		err error
+	)
+
+	id, err = strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil || id == 0 {
+		c.JSON(http.StatusBadRequest, map[string]interface{}{"status": "error", "error": "Invalid value in param 'id'"})
+		return
+	}
+
+	err = h.uc.DeleteCategory(uint(id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{"status": "error", "error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{"status": "success"})
 }
 
 func (h *Handler) GetTaskList(c *gin.Context) {

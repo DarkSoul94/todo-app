@@ -15,8 +15,16 @@ func NewUsecase(repo app.Repository) app.Usecase {
 	}
 }
 
+func (u *usecase) GetCategoryList() ([]models.Category, error) {
+	return u.repo.GetCategoryList()
+}
+
 func (u *usecase) CreateCategory(cat models.Category) (uint, error) {
 	return u.repo.CreateCategory(cat)
+}
+
+func (u *usecase) DeleteCategory(id uint) error {
+	return u.repo.DeleteCategory(id)
 }
 
 func (u *usecase) GetTaskList() ([]models.Task, error) {
