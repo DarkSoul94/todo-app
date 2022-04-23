@@ -15,7 +15,6 @@ import (
 	apprepo "github.com/DarkSoul94/todo-app/backend/app/repo/postgres"
 	appusecase "github.com/DarkSoul94/todo-app/backend/app/usecase"
 	"github.com/DarkSoul94/todo-app/backend/models"
-	micrologger "github.com/alexvelfr/micro-logger"
 	"github.com/gin-gonic/gin"
 	_ "github.com/golang-migrate/migrate/v4/source/file" // required
 	"github.com/spf13/viper"
@@ -51,10 +50,6 @@ func (a *App) Run(port string) error {
 	} else {
 		router.Use(gin.Logger())
 	}
-
-	router.Use(
-		gin.RecoveryWithWriter(micrologger.GetWriter()),
-	)
 
 	apiRouter := router.Group("/api")
 	apphttp.RegisterHTTPEndpoints(apiRouter, a.appUC)

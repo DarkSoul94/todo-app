@@ -11,8 +11,6 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    ports:
-      - 5445:5432
     networks:
       - todo_app
 
@@ -24,6 +22,19 @@ services:
       - db
     ports:
       - 7070:8080
+    networks:
+      - todo_app
+
+  backend:
+    container_name: todo_app_backend
+    build: ./backend
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - ./data/store:/usr/local/bin/store
+    ports:
+      - 8000:8888
     networks:
       - todo_app
 
