@@ -38,5 +38,16 @@ services:
     networks:
       - todo_app
 
+  nginx:
+    container_name: todo_app_nginx
+    build: ./nginx
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - 3001:3001
+    networks:
+      - todo_app
+
 networks:
   todo_app:
