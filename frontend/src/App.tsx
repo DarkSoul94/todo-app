@@ -1,16 +1,12 @@
 import { useEffect, useState } from 'react';
-import { getCategoryList } from './api/category';
+import { createCategory, getCategoryList } from './api/category';
 import './App.scss';
 import NewCategory from './components/NewCategory/NewCategory';
 import NewTask from './components/NewTask/NewTask';
 import TaskItem from './components/Task/TaskItem';
 import { Category, Task } from './types';
 
-const Categories: Array<Category> = [
-  { id: 0, name: "All" },
-  { id: 1, name: "Groceries" },
-  { id: 2, name: "College" },
-]
+const DefaultCategory: Category = { id: 0, name: "All" }
 
 const Tasks: Array<Task> = [
   { id: 1, text: "Get a new helmet", category: { id: 0, name: "All" }, checked: true },
@@ -20,14 +16,14 @@ const Tasks: Array<Task> = [
 function App() {
   const [tasks, setTasks] = useState<Array<Task>>([])
   const [categoryes, setCategoryes] = useState<Array<Category>>([])
-  const [category, setCategory] = useState<Category>({ id: 0, name: "All" })
+  const [category, setCategory] = useState<Category>(DefaultCategory)
 
   useEffect(() => {
-    getCategoryList().then((res) => {
-      return res.data
-    }).then((data) => {
-      setCategoryes(data.categoryList);
-    })
+    getCategoryList().then(res => { return res.data })
+      .then((data) => {
+        setCategoryes([DefaultCategory, ...data.categoryList]);
+      })
+
     setTasks(Tasks);
   }, [])
 
@@ -42,9 +38,12 @@ function App() {
     })
   }
 
-  const createCategory = (newCategory: Category) => {
-    newCategory.id = categoryes.length + 1;
-    setCategoryes(prev => [...prev, newCategory])
+  const newCategory = (newCategory: Category) => {
+    createCategory(newCategory).then(res => { return res.data })
+      .then(data => {
+        newCategory.id = data.id
+        setCategoryes(prev => [...prev, newCategory])
+      })
   }
 
   const categoryList = categoryes.map(cat => (
@@ -77,7 +76,7 @@ function App() {
   return (
     <div className="wrapper">
       <header>
-        <NewCategory createCategory={createCategory} />
+        <NewCategory createCategory={newCategory} />
         <div className="category-list">
           {categoryList}
         </div>

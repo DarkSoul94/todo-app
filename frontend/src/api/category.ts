@@ -9,6 +9,11 @@ export const getCategoryList = () => {
   return $host.get<getCategoryListResponce>("/category")
 }
 
+export type createCategoryResponce = {
+  status: string
+  id: number
+}
+
 export const createCategory = (cat: Category) => {
-  return $host.post("/category", cat)
+  return $host.post<createCategoryResponce>("/category", cat)
 }
