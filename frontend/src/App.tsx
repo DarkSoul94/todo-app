@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { getCategoryList } from './api/category';
 import './App.scss';
 import NewCategory from './components/NewCategory/NewCategory';
 import NewTask from './components/NewTask/NewTask';
@@ -22,7 +23,11 @@ function App() {
   const [category, setCategory] = useState<Category>({ id: 0, name: "All" })
 
   useEffect(() => {
-    setCategoryes(Categories);
+    getCategoryList().then((res) => {
+      return res.data
+    }).then((data) => {
+      setCategoryes(data.categoryList);
+    })
     setTasks(Tasks);
   }, [])
 

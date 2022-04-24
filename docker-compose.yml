@@ -33,19 +33,17 @@ services:
       - db
     volumes:
       - ./data/store:/usr/local/bin/store
-    ports:
-      - 8000:8888
     networks:
       - todo_app
 
-  nginx:
-    container_name: todo_app_nginx
-    build: ./nginx
+  frontend:
+    container_name: todo_app_frontend
+    build: ./frontend
     restart: always
     depends_on:
       - backend
     ports:
-      - 3001:3001
+      - 3010:3000
     networks:
       - todo_app
 
