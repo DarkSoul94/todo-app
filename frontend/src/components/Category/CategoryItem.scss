@@ -1,0 +1,21 @@
+.category-item {
+  position: relative;
+  width: 170px;
+  margin-bottom: 20px;
+
+  span {
+    font-weight: 700;
+    font-size: 22px;
+    color: #EA5959;
+
+    cursor: pointer;
+  }
+
+  .delete {
+    position: absolute;
+    right: 0;
+    top: 5px;
+
+    cursor: pointer;
+  }
+}

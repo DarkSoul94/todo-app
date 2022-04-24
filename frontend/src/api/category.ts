@@ -17,3 +17,7 @@ export type createCategoryResponce = {
 export const createCategory = (cat: Category) => {
   return $host.post<createCategoryResponce>("/category", cat)
 }
+
+export const deleteCategory = (categoryID: number) => {
+  return $host.delete("/category/" + categoryID)
+}

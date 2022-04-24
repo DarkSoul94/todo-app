@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { createCategory, getCategoryList } from './api/category';
+import { createCategory, deleteCategory, getCategoryList } from './api/category';
 import './App.scss';
+import CategoryItem from './components/Category/CategoryItem';
 import NewCategory from './components/NewCategory/NewCategory';
 import NewTask from './components/NewTask/NewTask';
 import TaskItem from './components/Task/TaskItem';
@@ -15,13 +16,13 @@ const Tasks: Array<Task> = [
 
 function App() {
   const [tasks, setTasks] = useState<Array<Task>>([])
-  const [categoryes, setCategoryes] = useState<Array<Category>>([])
+  const [categoryes, setCategoryes] = useState<Array<Category>>([DefaultCategory])
   const [category, setCategory] = useState<Category>(DefaultCategory)
 
   useEffect(() => {
-    getCategoryList().then(res => { return res.data })
+    getCategoryList().then(res => res.data)
       .then((data) => {
-        setCategoryes([DefaultCategory, ...data.categoryList]);
+        setCategoryes(prev => [...prev, ...data.categoryList]);
       })
 
     setTasks(Tasks);
@@ -38,23 +39,26 @@ function App() {
     })
   }
 
-  const newCategory = (newCategory: Category) => {
-    createCategory(newCategory).then(res => { return res.data })
+  const createCategoryHandle = (newCategory: Category) => {
+    createCategory(newCategory).then(res => res.data)
       .then(data => {
         newCategory.id = data.id
         setCategoryes(prev => [...prev, newCategory])
       })
   }
 
+  const deleteCategoryHandle = (categoryID: number) => {
+    deleteCategory(categoryID).then(() => {
+      setCategoryes(prev => prev.filter(cat => cat.id !== categoryID))
+    })
+  }
+
   const categoryList = categoryes.map(cat => (
-    <div className="category-item" key={cat.id}>
-      <span onClick={() => setCategory(cat)} >{cat.name}</span>
-    </div>
+    <CategoryItem key={cat.id} category={cat} setCategory={setCategory} deleteCategory={deleteCategoryHandle} />
   ))
 
   const crateTask = (newTask: Task) => {
     newTask.id = tasks.length + 1;
-    console.log(newTask)
     setTasks(prev => [...prev, newTask])
   }
 
@@ -76,7 +80,7 @@ function App() {
   return (
     <div className="wrapper">
       <header>
-        <NewCategory createCategory={newCategory} />
+        <NewCategory createCategory={createCategoryHandle} />
         <div className="category-list">
           {categoryList}
         </div>

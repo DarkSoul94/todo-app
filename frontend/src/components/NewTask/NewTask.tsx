@@ -37,7 +37,7 @@ const NewTask: FC<Props> = ({ taskCategory, createTask }) => {
 
   return (
     <div className="new-task">
-      <input type="text" placeholder={taskCategory.id ? "New task insdie ‘" + taskCategory.name + "’ category" : "New task insdie ‘Uncategorized’ category"} value={taskText} onChange={onChange} onKeyDown={onKeyDown} />
+      <input type="text" placeholder={taskCategory.id ? "New task insdie ‘" + taskCategory.name + "’ category" : "Please select category"} disabled={taskCategory.id === 0} value={taskText} onChange={onChange} onKeyDown={onKeyDown} />
     </div>
   )
 }

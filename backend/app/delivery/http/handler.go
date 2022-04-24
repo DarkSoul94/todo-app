@@ -71,7 +71,7 @@ func (h *Handler) toHandlerTask(task models.Task) handlerTask {
 func (h *Handler) GetCategoryList(c *gin.Context) {
 	var (
 		catList    []models.Category
-		outCatList []handlerCategory
+		outCatList []handlerCategory = make([]handlerCategory, 0)
 		err        error
 	)
 
