@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createCategory, deleteCategory, getCategoryList } from './api/category';
+import { createTask, deleteTask, getTaskList, updateTask } from './api/task';
 import './App.scss';
 import CategoryItem from './components/Category/CategoryItem';
 import NewCategory from './components/NewCategory/NewCategory';
@@ -9,11 +10,6 @@ import { Category, Task } from './types';
 
 const DefaultCategory: Category = { id: 0, name: "All" }
 
-const Tasks: Array<Task> = [
-  { id: 1, text: "Get a new helmet", category: { id: 0, name: "All" }, checked: true },
-  { id: 2, text: "Purchase Milk & Corn Flakes", category: { id: 1, name: "Groceries" }, checked: false },
-]
-
 function App() {
   const [tasks, setTasks] = useState<Array<Task>>([])
   const [categoryes, setCategoryes] = useState<Array<Category>>([DefaultCategory])
@@ -21,23 +17,15 @@ function App() {
 
   useEffect(() => {
     getCategoryList().then(res => res.data)
-      .then((data) => {
+      .then(data => {
         setCategoryes(prev => [...prev, ...data.categoryList]);
       })
 
-    setTasks(Tasks);
+    getTaskList().then(res => res.data)
+      .then(data => {
+        setTasks(data.taskList)
+      })
   }, [])
-
-  const check = (taskID: number, checkState: boolean) => {
-    setTasks(prev => {
-      prev.forEach(task => {
-        if (task.id === taskID) {
-          task.checked = checkState
-        }
-      });
-      return prev
-    })
-  }
 
   const createCategoryHandle = (newCategory: Category) => {
     createCategory(newCategory).then(res => res.data)
@@ -57,23 +45,39 @@ function App() {
     <CategoryItem key={cat.id} category={cat} setCategory={setCategory} deleteCategory={deleteCategoryHandle} />
   ))
 
-  const crateTask = (newTask: Task) => {
-    newTask.id = tasks.length + 1;
+  const createTaskHandle = (newTask: Task) => {
+    createTask(newTask).then(res => res.data)
+      .then(data => { newTask.id = data.id })
     setTasks(prev => [...prev, newTask])
   }
 
-  const deleteTask = (taskID: number) => {
-    setTasks(prev => prev.filter(task => task.id !== taskID))
+  const checkTaskHandle = (taskID: number, checkState: boolean) => {
+    updateTask(taskID, checkState).then(() => {
+      setTasks(prev => {
+        prev.forEach(task => {
+          if (task.id === taskID) {
+            task.checked = checkState
+          }
+        });
+        return prev
+      })
+    })
+  }
+
+  const deleteTaskHandle = (taskID: number) => {
+    deleteTask(taskID).then(() => {
+      setTasks(prev => prev.filter(task => task.id !== taskID))
+    })
   }
 
   let renderedList;
   if (category.id) {
     renderedList = tasks.filter(task => task.category.id === category.id).map(task => (
-      <TaskItem key={task.id} id={task.id} text={task.text} category={task.category.name} checked={task.checked} onCheck={check} onDelete={deleteTask} />
+      <TaskItem key={task.id} id={task.id} text={task.text} category={task.category.name} checked={task.checked} onCheck={checkTaskHandle} onDelete={deleteTaskHandle} />
     ))
   } else {
     renderedList = tasks.map(task => (
-      <TaskItem key={task.id} id={task.id} text={task.text} category={task.category.id ? task.category.name : "Uncategorized"} checked={task.checked} onCheck={check} onDelete={deleteTask} />
+      <TaskItem key={task.id} id={task.id} text={task.text} category={task.category.id ? task.category.name : "Uncategorized"} checked={task.checked} onCheck={checkTaskHandle} onDelete={deleteTaskHandle} />
     ))
   }
 
@@ -88,7 +92,7 @@ function App() {
 
       <div className="content">
         <h1>{category.name} Tasks</h1>
-        <NewTask taskCategory={category} createTask={crateTask} />
+        <NewTask taskCategory={category} createTask={createTaskHandle} />
         <div className="task-list">
           {renderedList}
         </div>

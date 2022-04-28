@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -182,6 +183,7 @@ func (h *Handler) UpdateTask(c *gin.Context) {
 		return
 	}
 
+	fmt.Println(task)
 	err = h.uc.UpdateTask(h.toModelTask(task))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, map[string]interface{}{"status": "error", "error": err.Error()})

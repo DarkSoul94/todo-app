@@ -14,8 +14,8 @@ const TaskItem: FC<Props> = ({ id, text, category, checked, onCheck, onDelete })
   const [checkboxState, setCheckboxState] = useState<boolean>(checked)
 
   const changeChecked = () => {
+    onCheck(id, !checkboxState)
     setCheckboxState(prev => !prev)
-    onCheck(id, checkboxState)
   }
 
   const onClickDelete = () => {
